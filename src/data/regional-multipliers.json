@@ -1,0 +1,22 @@
+{
+  "default": {
+    "label": "Default market",
+    "multiplier": 1
+  },
+  "london": {
+    "label": "London",
+    "multiplier": 1.18
+  },
+  "south_east": {
+    "label": "South East",
+    "multiplier": 1.1
+  },
+  "midlands": {
+    "label": "Midlands",
+    "multiplier": 0.98
+  },
+  "north_west": {
+    "label": "North West",
+    "multiplier": 0.94
+  }
+}

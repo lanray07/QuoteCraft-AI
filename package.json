@@ -1,0 +1,53 @@
+{
+  "name": "quotecraft-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Production-ready ChatGPT app for deterministic service-business quote generation.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "dev:widget": "vite build --watch",
+    "build": "npm run clean && npm run build:widget && npm run build:server && node scripts/copy-data.mjs",
+    "build:server": "tsc --project tsconfig.json",
+    "build:widget": "vite build",
+    "start": "node dist/server/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "node scripts/clean.mjs"
+  },
+  "keywords": [
+    "openai",
+    "apps-sdk",
+    "chatgpt-app",
+    "quotes",
+    "typescript",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.5.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.9.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "jsdom": "^27.0.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.3",
+    "vitest": "^4.0.8"
+  }
+}

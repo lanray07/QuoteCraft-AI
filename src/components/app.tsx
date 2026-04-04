@@ -1,0 +1,208 @@
+import { App, PostMessageTransport, applyHostFonts, applyHostStyleVariables } from "@modelcontextprotocol/ext-apps";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { StrictMode, useEffect, useMemo, useState } from "react";
+import { createRoot } from "react-dom/client";
+import { appConfig } from "../lib/app-config.js";
+import type { QuoteEstimate, QuoteExplanation, QuoteInput } from "../lib/types.js";
+import { AssumptionsList } from "./AssumptionsList.js";
+import { QuoteForm } from "./QuoteForm.js";
+import { QuoteResultCard } from "./QuoteResultCard.js";
+import { UpsellSuggestions } from "./UpsellSuggestions.js";
+import { LawnPreset } from "./presets/LawnPreset.js";
+import { PatioPreset } from "./presets/PatioPreset.js";
+import { PressureWashingPreset } from "./presets/PressureWashingPreset.js";
+import { getDefaultInput } from "./widget-config.js";
+import "./styles.css";
+
+interface ToolPayload {
+  quote?: QuoteEstimate;
+  explanation?: QuoteExplanation;
+}
+
+declare global {
+  interface Window {
+    openai?: unknown;
+  }
+}
+
+function AppShell() {
+  const [form, setForm] = useState<QuoteInput>(getDefaultInput());
+  const [quote, setQuote] = useState<QuoteEstimate | null>(null);
+  const [explanation, setExplanation] = useState<QuoteExplanation | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [app, setApp] = useState<App | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const createdApp = new App(
+      { name: appConfig.name, version: appConfig.version },
+      {}
+    );
+
+    const applyToolResult = (result: CallToolResult) => {
+      const payload = result.structuredContent as ToolPayload | undefined;
+      const meta = result._meta as
+        | { formDefaults?: QuoteInput; explanation?: QuoteExplanation }
+        | undefined;
+
+      if (meta?.formDefaults) {
+        setForm(meta.formDefaults);
+      }
+
+      if (payload?.quote) {
+        setQuote(payload.quote);
+      }
+
+      if (payload?.explanation) {
+        setExplanation(payload.explanation);
+      } else if (meta?.explanation) {
+        setExplanation(meta.explanation);
+      }
+
+      setBusy(false);
+    };
+
+    createdApp.ontoolresult = applyToolResult;
+    createdApp.onhostcontextchanged = (context) => {
+      if (context.styles?.variables) {
+        applyHostStyleVariables(context.styles.variables);
+      }
+      if (context.styles?.css?.fonts) {
+        applyHostFonts(context.styles.css.fonts);
+      }
+    };
+
+    void createdApp
+      .connect(new PostMessageTransport(window.parent, window.parent))
+      .then(() => {
+        setApp(createdApp);
+        setIsConnected(true);
+        setConnectionError(null);
+        const initialContext = createdApp.getHostContext();
+        if (initialContext?.styles?.variables) {
+          applyHostStyleVariables(initialContext.styles.variables);
+        }
+        if (initialContext?.styles?.css?.fonts) {
+          applyHostFonts(initialContext.styles.css.fonts);
+        }
+      })
+      .catch((nextError) => {
+        setConnectionError(nextError instanceof Error ? nextError.message : "Unable to connect.");
+      });
+
+    return () => {
+      void (createdApp as unknown as { close?: () => Promise<void> }).close?.();
+    };
+  }, []);
+
+  const statusText = useMemo(() => {
+    if (connectionError) {
+      return connectionError;
+    }
+
+    if (!isConnected) {
+      return "Connecting to ChatGPT...";
+    }
+
+    return "Connected";
+  }, [connectionError, isConnected]);
+
+  async function runTool(toolName: string) {
+    if (!app) {
+      return;
+    }
+
+    try {
+      setBusy(true);
+      setError(null);
+      const result = await app.callServerTool({
+        name: toolName,
+        arguments: form as unknown as Record<string, unknown>
+      });
+      const payload = result.structuredContent as ToolPayload | undefined;
+      const meta = result._meta as
+        | { formDefaults?: QuoteInput; explanation?: QuoteExplanation }
+        | undefined;
+
+      if (payload?.quote) {
+        setQuote(payload.quote);
+      }
+
+      if (payload?.explanation) {
+        setExplanation(payload.explanation);
+      } else if (meta?.explanation) {
+        setExplanation(meta.explanation);
+      }
+
+      if (meta?.formDefaults) {
+        setForm(meta.formDefaults);
+      }
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : "Unable to complete the request.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="app-shell">
+      <div className="hero-card">
+        <div>
+          <p className="eyebrow">Service quote workspace</p>
+          <h1>Fast, auditable quotes inside ChatGPT</h1>
+          <p className="hero-copy">
+            Pick a service, enter size and location, and QuoteCraft AI will calculate a
+            structured estimate with transparent formulas.
+          </p>
+        </div>
+        <div className="connection-badge">{statusText}</div>
+      </div>
+
+      <div className="preset-strip">
+        <PatioPreset onSelect={setForm} />
+        <LawnPreset onSelect={setForm} />
+        <PressureWashingPreset onSelect={setForm} />
+      </div>
+
+      <QuoteForm
+        value={form}
+        onChange={setForm}
+        onSubmit={() => runTool(quote ? appConfig.tools.regenerateQuote : appConfig.tools.generateQuote)}
+        onExplain={() => runTool(appConfig.tools.explainQuote)}
+        isBusy={busy}
+        hasResult={Boolean(quote)}
+        result={quote}
+        explanation={explanation}
+      />
+
+      {error ? <div className="error-banner">{error}</div> : null}
+
+      {quote ? (
+        <div className="results-stack">
+          <QuoteResultCard quote={quote} explanation={explanation} />
+          <AssumptionsList assumptions={quote.assumptions} />
+          <UpsellSuggestions items={quote.suggestedUpsells} />
+        </div>
+      ) : (
+        <div className="empty-panel">
+          <h2>No quote yet</h2>
+          <p>Select a preset or enter project details to generate the first estimate.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found.");
+}
+
+createRoot(rootElement).render(
+  <StrictMode>
+    <AppShell />
+  </StrictMode>
+);

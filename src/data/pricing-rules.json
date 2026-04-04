@@ -1,0 +1,148 @@
+{
+  "services": {
+    "paver_patio": {
+      "displayName": "Paver Patio",
+      "unit": "sq_ft",
+      "sizeLabel": "Square feet",
+      "baseMaterialCostByTier": {
+        "budget": 13,
+        "standard": 18,
+        "premium": 25
+      },
+      "baseLaborCostByTier": {
+        "budget": 10,
+        "standard": 15,
+        "premium": 22
+      },
+      "minimumJobTotal": 4500,
+      "lowRangeMultiplier": 0.92,
+      "highRangeMultiplier": 1.12,
+      "upsells": [
+        "Add landscape lighting along the patio edge.",
+        "Offer a matching walkway connection.",
+        "Include annual re-sanding and sealing maintenance."
+      ],
+      "defaultAssumptions": [
+        "Pricing assumes standard site access and no major grading corrections.",
+        "Estimate assumes compacted base prep is typical for residential hardscape work.",
+        "Permit fees, utility conflicts, and drainage redesign are excluded unless noted."
+      ],
+      "optionalExtras": {
+        "demolition_prep": {
+          "label": "Existing surface demolition and haul-off",
+          "pricingType": "flat",
+          "amount": 950,
+          "assumption": "Existing material removal is limited to a typical residential patio footprint."
+        },
+        "polymeric_sand_upgrade": {
+          "label": "Polymeric sand upgrade",
+          "pricingType": "per_unit",
+          "amount": 1.25,
+          "assumption": "Joint stabilization upgrade covers the full patio area."
+        },
+        "border_accent": {
+          "label": "Premium border accent",
+          "pricingType": "per_unit",
+          "amount": 3,
+          "assumption": "Accent border is installed around the full patio perimeter equivalent."
+        }
+      }
+    },
+    "lawn_makeover": {
+      "displayName": "Lawn Makeover",
+      "unit": "acre",
+      "sizeLabel": "Acres",
+      "baseMaterialCostByTier": {
+        "budget": 4500,
+        "standard": 6500,
+        "premium": 9000
+      },
+      "baseLaborCostByTier": {
+        "budget": 2800,
+        "standard": 4200,
+        "premium": 6100
+      },
+      "minimumJobTotal": 2500,
+      "lowRangeMultiplier": 0.9,
+      "highRangeMultiplier": 1.15,
+      "upsells": [
+        "Bundle an irrigation check and sprinkler tune-up.",
+        "Offer seasonal flower bed refresh for curb appeal.",
+        "Add a quarterly fertilization and weed-control plan."
+      ],
+      "defaultAssumptions": [
+        "Estimate assumes lawn renovation is limited to accessible residential turf areas.",
+        "Topsoil import is limited to minor leveling rather than full grade reconstruction.",
+        "Tree removal, drainage corrections, and hardscape work are not included."
+      ],
+      "optionalExtras": {
+        "irrigation_tuneup": {
+          "label": "Irrigation tune-up",
+          "pricingType": "flat",
+          "amount": 650,
+          "assumption": "Existing irrigation system is present and serviceable."
+        },
+        "mulch_beds": {
+          "label": "Mulch bed refresh",
+          "pricingType": "flat",
+          "amount": 1800,
+          "assumption": "Includes refresh of a typical front-yard bed package."
+        },
+        "seasonal_color": {
+          "label": "Seasonal color installation",
+          "pricingType": "flat",
+          "amount": 1200,
+          "assumption": "Color rotation assumes standard annual plant density."
+        }
+      }
+    },
+    "pressure_washing": {
+      "displayName": "Pressure Washing",
+      "unit": "sq_ft",
+      "sizeLabel": "Square feet",
+      "baseMaterialCostByTier": {
+        "budget": 0.18,
+        "standard": 0.28,
+        "premium": 0.4
+      },
+      "baseLaborCostByTier": {
+        "budget": 0.32,
+        "standard": 0.48,
+        "premium": 0.7
+      },
+      "minimumJobTotal": 350,
+      "lowRangeMultiplier": 0.94,
+      "highRangeMultiplier": 1.1,
+      "upsells": [
+        "Offer a protective sealer for concrete or pavers.",
+        "Bundle gutter brightening or house soft wash service.",
+        "Add recurring maintenance visits for high-traffic surfaces."
+      ],
+      "defaultAssumptions": [
+        "Estimate assumes water access is available on site.",
+        "Pricing assumes normal surface soiling without hazardous cleanup.",
+        "Oil saturation, paint removal, and post-clean sanding are excluded unless selected."
+      ],
+      "optionalExtras": {
+        "mildew_treatment": {
+          "label": "Mildew and algae treatment",
+          "pricingType": "per_unit",
+          "amount": 0.15,
+          "assumption": "Treatment is applied across the full cleaned surface area."
+        },
+        "degreasing": {
+          "label": "Oil and grease degreasing",
+          "pricingType": "per_unit",
+          "amount": 0.12,
+          "assumption": "Degreasing assumes light-to-moderate automotive staining."
+        },
+        "sealant": {
+          "label": "Surface sealant application",
+          "pricingType": "per_unit",
+          "amount": 0.65,
+          "assumption": "Sealant coverage is based on the total cleaned surface area."
+        }
+      }
+    }
+  }
+}

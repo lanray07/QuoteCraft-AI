@@ -1,0 +1,14 @@
+{
+  "paver_patio": {
+    "scopeTemplate": "installation of a {size} sq ft paver patio",
+    "clientNote": "Final pricing may shift if drainage, grading, or access conditions differ from a standard site."
+  },
+  "lawn_makeover": {
+    "scopeTemplate": "a lawn makeover covering {size} acre(s)",
+    "clientNote": "Final pricing may shift if the site needs additional soil correction, debris removal, or drainage work."
+  },
+  "pressure_washing": {
+    "scopeTemplate": "pressure washing of approximately {size} sq ft of surface area",
+    "clientNote": "Final pricing may shift if staining, runoff controls, or access conditions require extra labor."
+  }
+}

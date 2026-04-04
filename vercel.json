@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/server/index.js"
+    }
+  ],
+  "functions": {
+    "server/index.js": {
+      "runtime": "nodejs20.x",
+      "includeFiles": "data/**"
+    }
+  }
+}
