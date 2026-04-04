@@ -1,17 +1,9 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/server/index.js"
+      "destination": "/api"
     }
-  ],
-  "functions": {
-    "server/index.js": {
-      "runtime": "nodejs20.x",
-      "includeFiles": "data/**"
-    }
-  }
+  ]
 }
