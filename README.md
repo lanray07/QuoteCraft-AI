@@ -148,6 +148,11 @@ npm run build
 4. Expose the deployment URL as your ChatGPT app endpoint
 5. If required for submission, set a dedicated `OPENAI_APP_DOMAIN`
 
+Legal pages exposed by the app:
+
+- Privacy policy: `/privacy`
+- Terms of use: `/terms`
+
 ## Updating Pricing Rules
 
 Primary pricing edits live in:

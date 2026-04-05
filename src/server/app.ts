@@ -12,6 +12,7 @@ import { requireJson } from "./middleware/validation.js";
 import { registerComponents } from "./register-components.js";
 import { registerTools } from "./register-tools.js";
 import { registerHealthRoute } from "./routes/health.js";
+import { registerLegalRoutes } from "./routes/legal.js";
 import { registerMetadataRoute } from "./routes/metadata.js";
 
 function createServer() {
@@ -60,6 +61,7 @@ export async function createQuoteCraftApp(host = "127.0.0.1"): Promise<Express> 
   app.use(requireJson);
   registerHealthRoute(app);
   registerMetadataRoute(app);
+  registerLegalRoutes(app);
 
   app.get("/", (_req: Request, res: Response) => {
     res.json({
