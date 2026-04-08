@@ -1,55 +1,7 @@
-import { readFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { registerAppResource, RESOURCE_MIME_TYPE } from "@modelcontextprotocol/ext-apps/server";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { widgetCss, widgetScript } from "../generated/widget-artifact.js";
 import { appConfig } from "../lib/app-config.js";
-
-const currentDir = dirname(fileURLToPath(import.meta.url));
-
-async function readWidgetBuildAssets() {
-  const manifestCandidates = [
-    resolve(currentDir, "../../widget/.vite/manifest.json"),
-    resolve(currentDir, "../../widget/manifest.json")
-  ];
-
-  let manifestPath: string | null = null;
-
-  for (const candidate of manifestCandidates) {
-    try {
-      await readFile(candidate, "utf8");
-      manifestPath = candidate;
-      break;
-    } catch {
-      continue;
-    }
-  }
-
-  if (!manifestPath) {
-    throw new Error("Widget build artifacts were not found. Run `npm run build:widget` first.");
-  }
-
-  const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as Record<
-    string,
-    { file: string; css?: string[] }
-  >;
-  const entry = manifest[appConfig.widgetEntry];
-
-  if (!entry) {
-    throw new Error(`Widget manifest does not include ${appConfig.widgetEntry}.`);
-  }
-
-  const widgetDir = dirname(manifestPath);
-  const rootDir = resolve(widgetDir, "..");
-  const script = await readFile(resolve(rootDir, entry.file), "utf8");
-  const css = entry.css?.length
-    ? (
-        await Promise.all(entry.css.map((file) => readFile(resolve(rootDir, file), "utf8")))
-      ).join("\n")
-    : "";
-
-  return { script, css };
-}
 
 function buildWidgetDocument(script: string, css: string): string {
   return `<!doctype html>
@@ -77,14 +29,16 @@ export function registerComponents(server: McpServer): void {
       description: "Interactive quote form and result breakdown for service-business estimates."
     },
     async () => {
-      const { script, css } = await readWidgetBuildAssets();
+      if (!widgetScript) {
+        throw new Error("Widget build artifacts were not embedded. Run `npm run build` first.");
+      }
 
       return {
         contents: [
           {
             uri: appConfig.widgetResourceUri,
             mimeType: RESOURCE_MIME_TYPE,
-            text: buildWidgetDocument(script, css),
+            text: buildWidgetDocument(widgetScript, widgetCss),
             _meta: {
               ui: {
                 prefersBorder: true,

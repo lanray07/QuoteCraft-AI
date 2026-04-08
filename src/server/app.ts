@@ -63,6 +63,17 @@ export async function createQuoteCraftApp(host = "127.0.0.1"): Promise<Express> 
   registerMetadataRoute(app);
   registerLegalRoutes(app);
 
+  app.get("/.well-known/openai-apps-challenge", (_req, res) => {
+    const token = process.env.OPENAI_APPS_CHALLENGE_TOKEN;
+
+    if (!token) {
+      res.status(404).type("text/plain").send("Challenge token not configured.");
+      return;
+    }
+
+    res.type("text/plain").send(token);
+  });
+
   app.get("/", (_req: Request, res: Response) => {
     res.json({
       name: appConfig.name,

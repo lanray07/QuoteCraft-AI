@@ -10,9 +10,10 @@
   "scripts": {
     "dev": "tsx watch src/server/index.ts",
     "dev:widget": "vite build --watch",
-    "build": "npm run clean && npm run build:widget && npm run build:server && node scripts/copy-data.mjs",
+    "build": "npm run clean && npm run build:widget && npm run generate:widget-module && npm run build:server && node scripts/copy-data.mjs",
     "build:server": "tsc --project tsconfig.json",
     "build:widget": "vite build",
+    "generate:widget-module": "node scripts/generate-widget-module.mjs",
     "start": "node dist/server/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
