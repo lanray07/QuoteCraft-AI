@@ -28,7 +28,7 @@ describe("quote tool flows", () => {
     expect(result._meta.quote.workingEstimate).toBe(result._meta.quote.midEstimate);
     expect(result._meta.formDefaults.location).toBe("London");
     expect((result._meta as { explanation?: unknown }).explanation).toBeUndefined();
-    expect(result.content[0].text).toContain("Quote ready in the QuoteCraft AI widget");
+    expect(result.content).toEqual([]);
   });
 
   test("explainQuote returns the explanation through metadata", async () => {
@@ -39,7 +39,7 @@ describe("quote tool flows", () => {
     expect(result.structuredContent.explanation.steps.length).toBeGreaterThan(0);
     expect(result._meta.quote.serviceName).toBe("Paver Patio");
     expect(result._meta.explanation.steps.length).toBeGreaterThan(0);
-    expect(result.content[0].text).toContain("Pricing explanation loaded in the QuoteCraft AI widget");
+    expect(result.content).toEqual([]);
   });
 
   test("regenerateQuote reflects changed urgency in metadata", async () => {
@@ -52,6 +52,6 @@ describe("quote tool flows", () => {
     expect(result.structuredContent.quote.urgencyAdjustment).toBeGreaterThan(0);
     expect(result._meta.quote.urgencyAdjustment).toBeGreaterThan(0);
     expect((result._meta as { explanation?: unknown }).explanation).toBeUndefined();
-    expect(result.content[0].text).toContain("Updated quote ready in the QuoteCraft AI widget");
+    expect(result.content).toEqual([]);
   });
 });

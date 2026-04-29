@@ -10,12 +10,7 @@ export async function regenerateQuoteTool(input: RawQuoteInput) {
       status: "quote_ready",
       quote: estimate
     },
-    content: [
-      {
-        type: "text" as const,
-        text: "Updated quote ready in the QuoteCraft AI widget. Use the widget as the authoritative estimate and pricing breakdown."
-      }
-    ],
+    content: [],
     _meta: {
       formDefaults: estimate.input,
       quote: estimate

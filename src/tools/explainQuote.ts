@@ -12,12 +12,7 @@ export async function explainQuoteTool(input: RawQuoteInput) {
       quote: estimate,
       explanation
     },
-    content: [
-      {
-        type: "text" as const,
-        text: "Pricing explanation loaded in the QuoteCraft AI widget. Use the widget as the authoritative estimate, assumptions, and calculation breakdown."
-      }
-    ],
+    content: [],
     _meta: {
       formDefaults: estimate.input,
       quote: estimate,
