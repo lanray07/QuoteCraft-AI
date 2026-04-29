@@ -65,6 +65,8 @@ function AppShell() {
         setExplanation(meta.explanation);
       } else if (payload?.explanation) {
         setExplanation(payload.explanation);
+      } else if (meta?.quote || payload?.quote) {
+        setExplanation(null);
       }
 
       setBusy(false);
@@ -140,6 +142,8 @@ function AppShell() {
         setExplanation(meta.explanation);
       } else if (payload?.explanation) {
         setExplanation(payload.explanation);
+      } else if (meta?.quote || payload?.quote) {
+        setExplanation(null);
       }
 
       if (meta?.formDefaults) {

@@ -4,7 +4,6 @@ import { parseQuoteInput, type RawQuoteInput } from "../lib/validators.js";
 export async function regenerateQuoteTool(input: RawQuoteInput) {
   const normalized = parseQuoteInput(input);
   const estimate = await generateDeterministicQuote(normalized);
-  const explanation = explainDeterministicQuote(estimate);
 
   return {
     structuredContent: {
@@ -19,8 +18,7 @@ export async function regenerateQuoteTool(input: RawQuoteInput) {
     ],
     _meta: {
       formDefaults: estimate.input,
-      quote: estimate,
-      explanation
+      quote: estimate
     }
   };
 }
