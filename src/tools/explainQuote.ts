@@ -8,7 +8,9 @@ export async function explainQuoteTool(input: RawQuoteInput) {
 
   return {
     structuredContent: {
-      status: "explanation_ready"
+      status: "explanation_ready",
+      quote: estimate,
+      explanation
     },
     content: [
       {

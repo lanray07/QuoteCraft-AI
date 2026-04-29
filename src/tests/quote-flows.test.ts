@@ -23,6 +23,7 @@ describe("quote tool flows", () => {
     const result = await generateQuoteTool(baseInput);
 
     expect(result.structuredContent.status).toBe("quote_ready");
+    expect(result.structuredContent.quote.serviceName).toBe("Paver Patio");
     expect(result._meta.quote.serviceName).toBe("Paver Patio");
     expect(result._meta.quote.workingEstimate).toBe(result._meta.quote.midEstimate);
     expect(result._meta.formDefaults.location).toBe("London");
@@ -34,6 +35,8 @@ describe("quote tool flows", () => {
     const result = await explainQuoteTool(baseInput);
 
     expect(result.structuredContent.status).toBe("explanation_ready");
+    expect(result.structuredContent.quote.serviceName).toBe("Paver Patio");
+    expect(result.structuredContent.explanation.steps.length).toBeGreaterThan(0);
     expect(result._meta.quote.serviceName).toBe("Paver Patio");
     expect(result._meta.explanation.steps.length).toBeGreaterThan(0);
     expect(result.content[0].text).toContain("Pricing explanation loaded in the QuoteCraft AI widget");
@@ -46,6 +49,7 @@ describe("quote tool flows", () => {
     });
 
     expect(result.structuredContent.status).toBe("quote_ready");
+    expect(result.structuredContent.quote.urgencyAdjustment).toBeGreaterThan(0);
     expect(result._meta.quote.urgencyAdjustment).toBeGreaterThan(0);
     expect(result.content[0].text).toContain("Updated quote ready in the QuoteCraft AI widget");
   });

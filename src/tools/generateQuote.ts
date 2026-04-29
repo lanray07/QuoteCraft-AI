@@ -8,7 +8,8 @@ export async function generateQuoteTool(input: RawQuoteInput) {
 
   return {
     structuredContent: {
-      status: "quote_ready"
+      status: "quote_ready",
+      quote: estimate
     },
     content: [
       {
