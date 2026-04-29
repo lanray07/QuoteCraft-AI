@@ -27,6 +27,21 @@ describe("validators", () => {
     expect(parsed.extras).toEqual(["demolition_prep"]);
   });
 
+  test("replaces placeholder location and region values with service defaults", () => {
+    const parsed = parseQuoteInput({
+      serviceType: "paver_patio",
+      projectSize: 500,
+      location: "Not specified",
+      region: "default",
+      qualityTier: "standard",
+      urgency: "standard",
+      extras: []
+    });
+
+    expect(parsed.location).toBe("London");
+    expect(parsed.region).toBe("london");
+  });
+
   test("rejects unsupported extras", () => {
     expect(() => validateExtras("pressure_washing", ["border_accent"])).toThrow(
       /Unsupported extra/

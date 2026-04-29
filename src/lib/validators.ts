@@ -9,6 +9,7 @@ import {
   type ServiceType
 } from "./types.js";
 import { getPricingRules } from "./calculator.js";
+import { getDefaultQuoteInput } from "./default-inputs.js";
 
 export const quoteToolInputShape = {
   serviceType: z.enum(SERVICE_TYPES),
@@ -41,6 +42,27 @@ const regionAliases: Record<string, RegionKey> = {
   north_west: "north_west"
 };
 
+const placeholderLocations = new Set([
+  "",
+  "not specified",
+  "unknown",
+  "unknown location",
+  "default",
+  "n/a",
+  "na",
+  "none",
+  "unspecified"
+]);
+
+function normalizeLocation(serviceType: ServiceType, location: string): string {
+  const trimmed = location.trim();
+  if (placeholderLocations.has(trimmed.toLowerCase())) {
+    return getDefaultQuoteInput(serviceType).location;
+  }
+
+  return trimmed;
+}
+
 export function normalizeRegion(region: string): RegionKey {
   const key = region.trim().toLowerCase();
   return regionAliases[key] ?? "default";
@@ -61,14 +83,19 @@ export function validateExtras(serviceType: ServiceType, extras: string[]): stri
 
 export function parseQuoteInput(input: RawQuoteInput): QuoteInput {
   const parsed = quoteInputSchema.parse(input);
-  const normalizedRegion = REGION_KEYS.includes(parsed.region as RegionKey)
-    ? (parsed.region as RegionKey)
-    : normalizeRegion(parsed.region);
+  const defaultInput = getDefaultQuoteInput(parsed.serviceType);
+  const normalizedLocation = normalizeLocation(parsed.serviceType, parsed.location);
+  const requestedRegion = parsed.region.trim().toLowerCase();
+  const normalizedRegion = placeholderLocations.has(requestedRegion)
+    ? defaultInput.region
+    : REGION_KEYS.includes(parsed.region as RegionKey)
+      ? (parsed.region as RegionKey)
+      : normalizeRegion(parsed.region);
 
   return {
     serviceType: parsed.serviceType,
     projectSize: parsed.projectSize,
-    location: parsed.location,
+    location: normalizedLocation,
     region: normalizedRegion,
     qualityTier: parsed.qualityTier,
     urgency: parsed.urgency,

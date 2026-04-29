@@ -1,5 +1,6 @@
 import pricingRules from "../data/pricing-rules.json" with { type: "json" };
 import regionalMultipliers from "../data/regional-multipliers.json" with { type: "json" };
+import { defaultQuoteInputsByService } from "../lib/default-inputs.js";
 import type { QuoteInput, RegionKey, ServicePricingRule, ServiceType } from "../lib/types.js";
 
 type PricingRulesJson = {
@@ -61,13 +62,5 @@ export const presets: PresetDefinition[] = [
 ];
 
 export function getDefaultInput(): QuoteInput {
-  return {
-    serviceType: "paver_patio",
-    projectSize: 500,
-    location: "London",
-    region: "london",
-    qualityTier: "standard",
-    urgency: "standard",
-    extras: []
-  };
+  return defaultQuoteInputsByService.paver_patio;
 }
