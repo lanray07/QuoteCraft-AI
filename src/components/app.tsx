@@ -165,8 +165,12 @@ function AppShell() {
       <QuoteForm
         value={form}
         onChange={setForm}
-        onSubmit={() => runTool(quote ? appConfig.tools.regenerateQuote : appConfig.tools.generateQuote)}
-        onExplain={() => runTool(appConfig.tools.explainQuote)}
+        onSubmit={() =>
+          runTool(
+            quote ? appConfig.widgetTools.regenerateQuote : appConfig.widgetTools.generateQuote
+          )
+        }
+        onExplain={() => runTool(appConfig.widgetTools.explainQuote)}
         isBusy={busy}
         hasResult={Boolean(quote)}
         result={quote}

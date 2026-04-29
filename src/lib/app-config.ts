@@ -13,6 +13,11 @@ export const appConfig = {
     generateQuote: "generateQuote",
     explainQuote: "explainQuote",
     regenerateQuote: "regenerateQuote"
+  },
+  widgetTools: {
+    generateQuote: "generateQuoteWidget",
+    explainQuote: "explainQuoteWidget",
+    regenerateQuote: "regenerateQuoteWidget"
   }
 } as const;
 

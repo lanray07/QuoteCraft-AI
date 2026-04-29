@@ -9,7 +9,14 @@ import { regenerateQuoteTool } from "../tools/regenerateQuote.js";
 const sharedMeta = {
   ui: {
     resourceUri: appConfig.widgetResourceUri,
-    visibility: ["model", "app"] as const
+    visibility: ["model"] as const
+  }
+};
+
+const widgetSharedMeta = {
+  ui: {
+    resourceUri: appConfig.widgetResourceUri,
+    visibility: ["app"] as const
   }
 };
 
@@ -30,6 +37,28 @@ export function registerTools(server: McpServer): void {
       },
       _meta: {
         ...sharedMeta,
+        "openai/toolInvocation/invoking": "Building quote",
+        "openai/toolInvocation/invoked": "Quote ready"
+      }
+    },
+    generateQuoteTool
+  );
+
+  registerAppTool(
+    server,
+    appConfig.widgetTools.generateQuote,
+    {
+      title: "Generate Quote Widget",
+      description: "App-only quote generation used by the QuoteCraft AI widget.",
+      inputSchema: quoteToolInputShape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+        idempotentHint: true
+      },
+      _meta: {
+        ...widgetSharedMeta,
         "openai/toolInvocation/invoking": "Building quote",
         "openai/toolInvocation/invoked": "Quote ready"
       }
@@ -61,6 +90,28 @@ export function registerTools(server: McpServer): void {
 
   registerAppTool(
     server,
+    appConfig.widgetTools.explainQuote,
+    {
+      title: "Explain Quote Widget",
+      description: "App-only quote explanation used by the QuoteCraft AI widget.",
+      inputSchema: quoteToolInputShape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+        idempotentHint: true
+      },
+      _meta: {
+        ...widgetSharedMeta,
+        "openai/toolInvocation/invoking": "Explaining quote",
+        "openai/toolInvocation/invoked": "Explanation ready"
+      }
+    },
+    explainQuoteTool
+  );
+
+  registerAppTool(
+    server,
     appConfig.tools.regenerateQuote,
     {
       title: "Regenerate Quote",
@@ -75,6 +126,28 @@ export function registerTools(server: McpServer): void {
       },
       _meta: {
         ...sharedMeta,
+        "openai/toolInvocation/invoking": "Refreshing quote",
+        "openai/toolInvocation/invoked": "Updated quote ready"
+      }
+    },
+    regenerateQuoteTool
+  );
+
+  registerAppTool(
+    server,
+    appConfig.widgetTools.regenerateQuote,
+    {
+      title: "Regenerate Quote Widget",
+      description: "App-only quote recalculation used by the QuoteCraft AI widget.",
+      inputSchema: quoteToolInputShape,
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+        idempotentHint: true
+      },
+      _meta: {
+        ...widgetSharedMeta,
         "openai/toolInvocation/invoking": "Refreshing quote",
         "openai/toolInvocation/invoked": "Updated quote ready"
       }
