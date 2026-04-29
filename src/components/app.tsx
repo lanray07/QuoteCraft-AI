@@ -13,6 +13,7 @@ import { LawnPreset } from "./presets/LawnPreset.js";
 import { PatioPreset } from "./presets/PatioPreset.js";
 import { PressureWashingPreset } from "./presets/PressureWashingPreset.js";
 import { getDefaultInput } from "./widget-config.js";
+import { explainLocalQuote, generateLocalQuote } from "./local-quote-engine.js";
 import "./styles.css";
 
 declare global {
@@ -103,6 +104,31 @@ function AppShell() {
   }, [connectionError, isConnected]);
 
   async function runTool(toolName: string) {
+    const isWidgetTool = Object.values(appConfig.widgetTools).includes(
+      toolName as (typeof appConfig.widgetTools)[keyof typeof appConfig.widgetTools]
+    );
+
+    if (isWidgetTool) {
+      try {
+        setBusy(true);
+        setError(null);
+        const nextQuote = generateLocalQuote(form);
+        setForm(nextQuote.input);
+        setQuote(nextQuote);
+
+        if (toolName === appConfig.widgetTools.explainQuote) {
+          setExplanation(explainLocalQuote(nextQuote));
+        } else {
+          setExplanation(null);
+        }
+      } catch (nextError) {
+        setError(nextError instanceof Error ? nextError.message : "Unable to complete the request.");
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+
     if (!app) {
       return;
     }
