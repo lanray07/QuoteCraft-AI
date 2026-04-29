@@ -1,5 +1,9 @@
 import { buildAssumptions, buildExplanationSummary } from "./assumptions.js";
-import { formatCurrency, buildClientFacingQuoteText } from "./formatters.js";
+import {
+  formatCurrency,
+  buildAuthoritativeQuoteSummary,
+  buildClientFacingQuoteText
+} from "./formatters.js";
 import { getRegionalMultipliers } from "./regional-adjustments.js";
 import {
   getMarkupConfig,
@@ -114,6 +118,7 @@ export async function generateDeterministicQuote(input: QuoteInput): Promise<Quo
     unitLabel: rules.sizeLabel,
     lowEstimate,
     midEstimate,
+    workingEstimate: midEstimate,
     highEstimate,
     materialEstimate: materialBase,
     laborEstimate: laborBase,
@@ -126,10 +131,12 @@ export async function generateDeterministicQuote(input: QuoteInput): Promise<Quo
     assumptions,
     suggestedUpsells: rules.upsells,
     formulaBreakdown,
-    clientFacingQuoteText: ""
+    clientFacingQuoteText: "",
+    authoritativeSummaryText: ""
   };
 
   estimate.clientFacingQuoteText = await buildClientFacingQuoteText(input, estimate);
+  estimate.authoritativeSummaryText = buildAuthoritativeQuoteSummary(estimate);
   return estimate;
 }
 

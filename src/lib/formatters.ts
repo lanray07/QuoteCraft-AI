@@ -23,10 +23,26 @@ export async function buildClientFacingQuoteText(
 
   return [
     `Thanks for the opportunity to quote ${scope} in ${input.location}.`,
-    `Based on the details provided, the expected investment range is ${formatCurrency(estimate.lowEstimate)} to ${formatCurrency(estimate.highEstimate)}, with a working estimate of ${formatCurrency(estimate.midEstimate)}.`,
+    `Based on the details provided, the expected investment range is ${formatCurrency(estimate.lowEstimate)} to ${formatCurrency(estimate.highEstimate)}, with a working estimate of ${formatCurrency(estimate.workingEstimate)}.`,
     `This pricing assumes ${assumptions.toLowerCase()}`,
     template.clientNote
   ].join(" ");
+}
+
+export function buildAuthoritativeQuoteSummary(estimate: QuoteEstimate): string {
+  return [
+    `Authoritative quote totals for ${estimate.serviceName} in ${estimate.input.location}:`,
+    `Low estimate: ${formatCurrency(estimate.lowEstimate)}`,
+    `Working estimate: ${formatCurrency(estimate.workingEstimate)}`,
+    `High estimate: ${formatCurrency(estimate.highEstimate)}`,
+    `Materials: ${formatCurrency(estimate.materialEstimate)}`,
+    `Labor: ${formatCurrency(estimate.laborEstimate)}`,
+    `Markup: ${formatCurrency(estimate.markupAmount)}`,
+    `Regional adjustment: ${formatCurrency(estimate.regionalAdjustment)}`,
+    `Urgency adjustment: ${formatCurrency(estimate.urgencyAdjustment)}`,
+    `Extras: ${formatCurrency(estimate.extrasTotal)}`,
+    `Use these figures exactly as returned; the working estimate already includes markup, regional pricing, urgency, and extras.`
+  ].join("\n");
 }
 
 export { formatCurrency, formatRegionLabel };

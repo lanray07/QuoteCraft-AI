@@ -14,7 +14,7 @@ export async function explainQuoteTool(input: RawQuoteInput) {
     content: [
       {
         type: "text" as const,
-        text: explanation.summary
+        text: `${estimate.authoritativeSummaryText}\n\n${explanation.summary}`
       }
     ],
     _meta: {

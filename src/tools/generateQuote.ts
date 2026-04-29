@@ -13,7 +13,7 @@ export async function generateQuoteTool(input: RawQuoteInput) {
     content: [
       {
         type: "text" as const,
-        text: `${estimate.serviceName} estimate ready: ${estimate.lowEstimate} to ${estimate.highEstimate} GBP, with a working estimate of ${estimate.midEstimate} GBP.`
+        text: estimate.authoritativeSummaryText
       }
     ],
     _meta: {

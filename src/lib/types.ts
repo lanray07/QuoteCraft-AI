@@ -87,6 +87,7 @@ export interface QuoteEstimate {
   unitLabel: string;
   lowEstimate: number;
   midEstimate: number;
+  workingEstimate: number;
   highEstimate: number;
   materialEstimate: number;
   laborEstimate: number;
@@ -100,6 +101,7 @@ export interface QuoteEstimate {
   suggestedUpsells: string[];
   formulaBreakdown: QuoteLineItem[];
   clientFacingQuoteText: string;
+  authoritativeSummaryText: string;
 }
 
 export interface QuoteExplanation {

@@ -23,9 +23,11 @@ describe("calculator", () => {
     expect(quote.markupAmount).toBe(2970);
     expect(quote.regionalAdjustment).toBe(3505);
     expect(quote.midEstimate).toBe(22975);
+    expect(quote.workingEstimate).toBe(22975);
     expect(quote.lowEstimate).toBe(21137);
     expect(quote.highEstimate).toBe(25732);
     expect(quote.minimumApplied).toBe(false);
+    expect(quote.authoritativeSummaryText).toContain("Working estimate: £22,975");
   });
 
   test("enforces minimum job totals where required", async () => {

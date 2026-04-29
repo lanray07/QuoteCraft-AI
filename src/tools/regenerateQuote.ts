@@ -13,7 +13,7 @@ export async function regenerateQuoteTool(input: RawQuoteInput) {
     content: [
       {
         type: "text" as const,
-        text: `Updated ${estimate.serviceName} estimate prepared for ${estimate.input.location}.`
+        text: estimate.authoritativeSummaryText
       }
     ],
     _meta: {

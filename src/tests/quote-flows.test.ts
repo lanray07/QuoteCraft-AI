@@ -23,8 +23,13 @@ describe("quote tool flows", () => {
     const result = await generateQuoteTool(baseInput);
 
     expect(result.structuredContent.quote.serviceName).toBe("Paver Patio");
+    expect(result.structuredContent.quote.workingEstimate).toBe(
+      result.structuredContent.quote.midEstimate
+    );
     expect(result._meta.formDefaults.location).toBe("London");
     expect(result._meta.explanation.summary).toContain("deterministic");
+    expect(result.content[0].text).toContain("Working estimate: £");
+    expect(result.content[0].text).toContain("Use these figures exactly as returned");
   });
 
   test("explainQuote includes formula explanation alongside the quote", async () => {
@@ -41,5 +46,6 @@ describe("quote tool flows", () => {
     });
 
     expect(result.structuredContent.quote.urgencyAdjustment).toBeGreaterThan(0);
+    expect(result.content[0].text).toContain("Authoritative quote totals");
   });
 });
