@@ -115,12 +115,7 @@ function AppShell() {
         const nextQuote = generateLocalQuote(form);
         setForm(nextQuote.input);
         setQuote(nextQuote);
-
-        if (toolName === appConfig.widgetTools.explainQuote) {
-          setExplanation(explainLocalQuote(nextQuote));
-        } else {
-          setExplanation(null);
-        }
+        setExplanation(explainLocalQuote(nextQuote));
       } catch (nextError) {
         setError(nextError instanceof Error ? nextError.message : "Unable to complete the request.");
       } finally {
@@ -196,11 +191,9 @@ function AppShell() {
             quote ? appConfig.widgetTools.regenerateQuote : appConfig.widgetTools.generateQuote
           )
         }
-        onExplain={() => runTool(appConfig.widgetTools.explainQuote)}
         isBusy={busy}
         hasResult={Boolean(quote)}
         result={quote}
-        explanation={explanation}
       />
 
       {error ? <div className="error-banner">{error}</div> : null}

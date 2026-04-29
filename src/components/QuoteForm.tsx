@@ -1,26 +1,22 @@
 import { widgetPricingRules, widgetRegions } from "./widget-config.js";
-import type { QuoteInput, QuoteEstimate, QuoteExplanation } from "../lib/types.js";
+import type { QuoteInput, QuoteEstimate } from "../lib/types.js";
 
 interface QuoteFormProps {
   value: QuoteInput;
   onChange: (value: QuoteInput) => void;
   onSubmit: () => void;
-  onExplain: () => void;
   isBusy: boolean;
   hasResult: boolean;
   result: QuoteEstimate | null;
-  explanation: QuoteExplanation | null;
 }
 
 export function QuoteForm({
   value,
   onChange,
   onSubmit,
-  onExplain,
   isBusy,
   hasResult,
-  result,
-  explanation
+  result
 }: QuoteFormProps) {
   const service = widgetPricingRules.services[value.serviceType];
   const availableExtras = Object.entries(service.optionalExtras);
@@ -169,10 +165,7 @@ export function QuoteForm({
         <button type="button" className="primary-button" onClick={onSubmit} disabled={isBusy}>
           {result ? "Recalculate quote" : "Generate quote"}
         </button>
-        <button type="button" className="secondary-button" onClick={onExplain} disabled={isBusy}>
-          Explain pricing
-        </button>
-        {explanation ? <span className="inline-note">Formula explanation loaded.</span> : null}
+        <span className="inline-note">Transparent assumptions and pricing logic are shown below the estimate.</span>
       </div>
     </section>
   );
