@@ -8,16 +8,17 @@ export async function generateQuoteTool(input: RawQuoteInput) {
 
   return {
     structuredContent: {
-      quote: estimate
+      status: "quote_ready"
     },
     content: [
       {
         type: "text" as const,
-        text: estimate.authoritativeSummaryText
+        text: "Quote ready in the QuoteCraft AI widget. Use the widget as the authoritative estimate and pricing breakdown."
       }
     ],
     _meta: {
       formDefaults: estimate.input,
+      quote: estimate,
       explanation
     }
   };

@@ -19,6 +19,12 @@ interface ToolPayload {
   explanation?: QuoteExplanation;
 }
 
+interface ToolMeta {
+  formDefaults?: QuoteInput;
+  quote?: QuoteEstimate;
+  explanation?: QuoteExplanation;
+}
+
 declare global {
   interface Window {
     openai?: unknown;
@@ -43,22 +49,22 @@ function AppShell() {
 
     const applyToolResult = (result: CallToolResult) => {
       const payload = result.structuredContent as ToolPayload | undefined;
-      const meta = result._meta as
-        | { formDefaults?: QuoteInput; explanation?: QuoteExplanation }
-        | undefined;
+      const meta = result._meta as ToolMeta | undefined;
 
       if (meta?.formDefaults) {
         setForm(meta.formDefaults);
       }
 
-      if (payload?.quote) {
+      if (meta?.quote) {
+        setQuote(meta.quote);
+      } else if (payload?.quote) {
         setQuote(payload.quote);
       }
 
-      if (payload?.explanation) {
-        setExplanation(payload.explanation);
-      } else if (meta?.explanation) {
+      if (meta?.explanation) {
         setExplanation(meta.explanation);
+      } else if (payload?.explanation) {
+        setExplanation(payload.explanation);
       }
 
       setBusy(false);
@@ -122,18 +128,18 @@ function AppShell() {
         arguments: form as unknown as Record<string, unknown>
       });
       const payload = result.structuredContent as ToolPayload | undefined;
-      const meta = result._meta as
-        | { formDefaults?: QuoteInput; explanation?: QuoteExplanation }
-        | undefined;
+      const meta = result._meta as ToolMeta | undefined;
 
-      if (payload?.quote) {
+      if (meta?.quote) {
+        setQuote(meta.quote);
+      } else if (payload?.quote) {
         setQuote(payload.quote);
       }
 
-      if (payload?.explanation) {
-        setExplanation(payload.explanation);
-      } else if (meta?.explanation) {
+      if (meta?.explanation) {
         setExplanation(meta.explanation);
+      } else if (payload?.explanation) {
+        setExplanation(payload.explanation);
       }
 
       if (meta?.formDefaults) {

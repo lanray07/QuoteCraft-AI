@@ -19,33 +19,34 @@ describe("quote tool flows", () => {
     extras: ["border_accent"]
   };
 
-  test("generateQuote returns quote data and hydration meta", async () => {
+  test("generateQuote returns widget hydration data in metadata", async () => {
     const result = await generateQuoteTool(baseInput);
 
-    expect(result.structuredContent.quote.serviceName).toBe("Paver Patio");
-    expect(result.structuredContent.quote.workingEstimate).toBe(
-      result.structuredContent.quote.midEstimate
-    );
+    expect(result.structuredContent.status).toBe("quote_ready");
+    expect(result._meta.quote.serviceName).toBe("Paver Patio");
+    expect(result._meta.quote.workingEstimate).toBe(result._meta.quote.midEstimate);
     expect(result._meta.formDefaults.location).toBe("London");
     expect(result._meta.explanation.summary).toContain("deterministic");
-    expect(result.content[0].text).toContain("Working estimate: £");
-    expect(result.content[0].text).toContain("Use these figures exactly as returned");
+    expect(result.content[0].text).toContain("Quote ready in the QuoteCraft AI widget");
   });
 
-  test("explainQuote includes formula explanation alongside the quote", async () => {
+  test("explainQuote returns the explanation through metadata", async () => {
     const result = await explainQuoteTool(baseInput);
 
-    expect(result.structuredContent.explanation.steps.length).toBeGreaterThan(0);
-    expect(result.content[0].text).toContain("deterministic");
+    expect(result.structuredContent.status).toBe("explanation_ready");
+    expect(result._meta.quote.serviceName).toBe("Paver Patio");
+    expect(result._meta.explanation.steps.length).toBeGreaterThan(0);
+    expect(result.content[0].text).toContain("Pricing explanation loaded in the QuoteCraft AI widget");
   });
 
-  test("regenerateQuote reflects changed urgency", async () => {
+  test("regenerateQuote reflects changed urgency in metadata", async () => {
     const result = await regenerateQuoteTool({
       ...baseInput,
       urgency: "urgent"
     });
 
-    expect(result.structuredContent.quote.urgencyAdjustment).toBeGreaterThan(0);
-    expect(result.content[0].text).toContain("Authoritative quote totals");
+    expect(result.structuredContent.status).toBe("quote_ready");
+    expect(result._meta.quote.urgencyAdjustment).toBeGreaterThan(0);
+    expect(result.content[0].text).toContain("Updated quote ready in the QuoteCraft AI widget");
   });
 });

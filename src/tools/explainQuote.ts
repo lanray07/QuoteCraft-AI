@@ -8,17 +8,17 @@ export async function explainQuoteTool(input: RawQuoteInput) {
 
   return {
     structuredContent: {
-      explanation,
-      quote: estimate
+      status: "explanation_ready"
     },
     content: [
       {
         type: "text" as const,
-        text: `${estimate.authoritativeSummaryText}\n\n${explanation.summary}`
+        text: "Pricing explanation loaded in the QuoteCraft AI widget. Use the widget as the authoritative estimate, assumptions, and calculation breakdown."
       }
     ],
     _meta: {
       formDefaults: estimate.input,
+      quote: estimate,
       explanation
     }
   };
