@@ -4,6 +4,7 @@ import { StrictMode, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { appConfig } from "../lib/app-config.js";
 import type { QuoteEstimate, QuoteExplanation, QuoteInput } from "../lib/types.js";
+import { normalizeToolResult } from "./result-normalizer.js";
 import { AssumptionsList } from "./AssumptionsList.js";
 import { QuoteForm } from "./QuoteForm.js";
 import { QuoteResultCard } from "./QuoteResultCard.js";
@@ -13,17 +14,6 @@ import { PatioPreset } from "./presets/PatioPreset.js";
 import { PressureWashingPreset } from "./presets/PressureWashingPreset.js";
 import { getDefaultInput } from "./widget-config.js";
 import "./styles.css";
-
-interface ToolPayload {
-  quote?: QuoteEstimate;
-  explanation?: QuoteExplanation;
-}
-
-interface ToolMeta {
-  formDefaults?: QuoteInput;
-  quote?: QuoteEstimate;
-  explanation?: QuoteExplanation;
-}
 
 declare global {
   interface Window {
@@ -48,24 +38,19 @@ function AppShell() {
     );
 
     const applyToolResult = (result: CallToolResult) => {
-      const payload = result.structuredContent as ToolPayload | undefined;
-      const meta = result._meta as ToolMeta | undefined;
+      const normalized = normalizeToolResult(result as CallToolResult & Record<string, unknown>);
 
-      if (meta?.formDefaults) {
-        setForm(meta.formDefaults);
+      if (normalized.formDefaults) {
+        setForm(normalized.formDefaults);
       }
 
-      if (meta?.quote) {
-        setQuote(meta.quote);
-      } else if (payload?.quote) {
-        setQuote(payload.quote);
+      if (normalized.quote) {
+        setQuote(normalized.quote);
       }
 
-      if (meta?.explanation) {
-        setExplanation(meta.explanation);
-      } else if (payload?.explanation) {
-        setExplanation(payload.explanation);
-      } else if (meta?.quote || payload?.quote) {
+      if (normalized.explanation) {
+        setExplanation(normalized.explanation);
+      } else if (normalized.quote) {
         setExplanation(null);
       }
 
@@ -129,25 +114,26 @@ function AppShell() {
         name: toolName,
         arguments: form as unknown as Record<string, unknown>
       });
-      const payload = result.structuredContent as ToolPayload | undefined;
-      const meta = result._meta as ToolMeta | undefined;
+      const normalized = normalizeToolResult(result as CallToolResult & Record<string, unknown>);
 
-      if (meta?.quote) {
-        setQuote(meta.quote);
-      } else if (payload?.quote) {
-        setQuote(payload.quote);
+      if (normalized.quote) {
+        setQuote(normalized.quote);
       }
 
-      if (meta?.explanation) {
-        setExplanation(meta.explanation);
-      } else if (payload?.explanation) {
-        setExplanation(payload.explanation);
-      } else if (meta?.quote || payload?.quote) {
+      if (normalized.explanation) {
+        setExplanation(normalized.explanation);
+      } else if (normalized.quote) {
         setExplanation(null);
       }
 
-      if (meta?.formDefaults) {
-        setForm(meta.formDefaults);
+      if (normalized.formDefaults) {
+        setForm(normalized.formDefaults);
+      }
+
+      if (!normalized.quote && toolName !== appConfig.tools.explainQuote) {
+        setError("QuoteCraft AI did not receive quote data back from ChatGPT. Please try again in a fresh chat.");
+      } else if (!normalized.explanation && toolName === appConfig.tools.explainQuote) {
+        setError("QuoteCraft AI did not receive explanation data back from ChatGPT. Please try again in a fresh chat.");
       }
     } catch (nextError) {
       setError(nextError instanceof Error ? nextError.message : "Unable to complete the request.");
