@@ -8,6 +8,7 @@ export const appConfig = {
   healthPath: "/health",
   metadataPath: "/metadata",
   widgetResourceUri: "ui://quotecraft/quote-widget-v101.html",
+  legacyWidgetResourceUris: ["ui://quotecraft/quote-widget.html"],
   widgetEntry: "src/components/app.tsx",
   tools: {
     generateQuote: "generateQuote",

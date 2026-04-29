@@ -20,46 +20,53 @@ function buildWidgetDocument(script: string, css: string): string {
 }
 
 export function registerComponents(server: McpServer): void {
-  registerAppResource(
-    server,
-    "QuoteCraft Quote Widget",
+  const widgetResourceUris = [
     appConfig.widgetResourceUri,
-    {
-      title: "QuoteCraft AI",
-      description: "Interactive quote form and result breakdown for service-business estimates."
-    },
-    async () => {
-      if (!widgetScript) {
-        throw new Error("Widget build artifacts were not embedded. Run `npm run build` first.");
-      }
+    ...(appConfig.legacyWidgetResourceUris ?? [])
+  ];
 
-      return {
-        contents: [
-          {
-            uri: appConfig.widgetResourceUri,
-            mimeType: RESOURCE_MIME_TYPE,
-            text: buildWidgetDocument(widgetScript, widgetCss),
-            _meta: {
-              ui: {
-                prefersBorder: true,
-                domain: process.env.OPENAI_APP_DOMAIN,
-                csp: {
-                  connectDomains: [],
-                  resourceDomains: []
+  for (const uri of widgetResourceUris) {
+    registerAppResource(
+      server,
+      "QuoteCraft Quote Widget",
+      uri,
+      {
+        title: "QuoteCraft AI",
+        description: "Interactive quote form and result breakdown for service-business estimates."
+      },
+      async () => {
+        if (!widgetScript) {
+          throw new Error("Widget build artifacts were not embedded. Run `npm run build` first.");
+        }
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: RESOURCE_MIME_TYPE,
+              text: buildWidgetDocument(widgetScript, widgetCss),
+              _meta: {
+                ui: {
+                  prefersBorder: true,
+                  domain: process.env.OPENAI_APP_DOMAIN,
+                  csp: {
+                    connectDomains: [],
+                    resourceDomains: []
+                  }
+                },
+                "openai/widgetDescription":
+                  "Interactive quote builder showing the form, pricing breakdown, assumptions, and client-ready quote text.",
+                "openai/widgetPrefersBorder": true,
+                "openai/widgetDomain": process.env.OPENAI_APP_DOMAIN,
+                "openai/widgetCSP": {
+                  connect_domains: [],
+                  resource_domains: []
                 }
-              },
-              "openai/widgetDescription":
-                "Interactive quote builder showing the form, pricing breakdown, assumptions, and client-ready quote text.",
-              "openai/widgetPrefersBorder": true,
-              "openai/widgetDomain": process.env.OPENAI_APP_DOMAIN,
-              "openai/widgetCSP": {
-                connect_domains: [],
-                resource_domains: []
               }
             }
-          }
-        ]
-      };
-    }
-  );
+          ]
+        };
+      }
+    );
+  }
 }
