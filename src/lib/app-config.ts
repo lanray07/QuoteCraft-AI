@@ -1,14 +1,17 @@
 export const appConfig = {
   name: "QuoteCraft AI",
   slug: "quotecraft-ai",
-  version: "1.0.1",
+  version: "1.0.2",
   description:
     "Deterministic quote builder for service businesses running as a ChatGPT app.",
   mcpPath: "/mcp",
   healthPath: "/health",
   metadataPath: "/metadata",
-  widgetResourceUri: "ui://quotecraft/quote-widget-v101.html",
-  legacyWidgetResourceUris: ["ui://quotecraft/quote-widget.html"],
+  widgetResourceUri: "ui://quotecraft/quote-widget-v102.html",
+  legacyWidgetResourceUris: [
+    "ui://quotecraft/quote-widget-v101.html",
+    "ui://quotecraft/quote-widget.html"
+  ],
   widgetEntry: "src/components/app.tsx",
   tools: {
     generateQuote: "generateQuote",

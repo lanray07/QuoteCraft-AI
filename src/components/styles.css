@@ -257,7 +257,7 @@ select {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.estimate-grid div {
+.metric-card {
   background: rgba(255, 255, 255, 0.76);
   border-radius: 16px;
   border: 1px solid var(--qc-line);
@@ -376,11 +376,7 @@ select {
     gap: 8px;
   }
 
-  .detail-metric {
-    display: none;
-  }
-
-  .estimate-grid div {
+  .metric-card {
     padding: 12px;
   }
 

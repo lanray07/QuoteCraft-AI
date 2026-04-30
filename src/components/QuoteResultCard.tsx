@@ -22,41 +22,17 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
       </div>
 
       <div className="estimate-grid">
-        <div className="metric-card range-metric">
+        <div className="metric-card">
           <span>Low</span>
           <strong>{formatCurrency(quote.lowEstimate)}</strong>
         </div>
-        <div className="metric-card range-metric">
+        <div className="metric-card">
           <span>Mid</span>
           <strong>{formatCurrency(quote.midEstimate)}</strong>
         </div>
-        <div className="metric-card range-metric">
+        <div className="metric-card">
           <span>High</span>
           <strong>{formatCurrency(quote.highEstimate)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Materials</span>
-          <strong>{formatCurrency(quote.materialEstimate)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Labor</span>
-          <strong>{formatCurrency(quote.laborEstimate)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Markup</span>
-          <strong>{formatCurrency(quote.markupAmount)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Regional adj.</span>
-          <strong>{formatCurrency(quote.regionalAdjustment)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Urgency adj.</span>
-          <strong>{formatCurrency(quote.urgencyAdjustment)}</strong>
-        </div>
-        <div className="metric-card detail-metric">
-          <span>Extras</span>
-          <strong>{formatCurrency(quote.extrasTotal)}</strong>
         </div>
       </div>
 
