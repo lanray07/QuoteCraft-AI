@@ -5,10 +5,8 @@ import { createRoot } from "react-dom/client";
 import { appConfig } from "../lib/app-config.js";
 import type { QuoteEstimate, QuoteExplanation, QuoteInput } from "../lib/types.js";
 import { normalizeToolResult } from "./result-normalizer.js";
-import { AssumptionsList } from "./AssumptionsList.js";
 import { QuoteForm } from "./QuoteForm.js";
 import { QuoteResultCard } from "./QuoteResultCard.js";
-import { UpsellSuggestions } from "./UpsellSuggestions.js";
 import { LawnPreset } from "./presets/LawnPreset.js";
 import { PatioPreset } from "./presets/PatioPreset.js";
 import { PressureWashingPreset } from "./presets/PressureWashingPreset.js";
@@ -201,8 +199,6 @@ function AppShell() {
       {quote ? (
         <div className="results-stack">
           <QuoteResultCard quote={quote} explanation={explanation} />
-          <AssumptionsList assumptions={quote.assumptions} />
-          <UpsellSuggestions items={quote.suggestedUpsells} />
         </div>
       ) : (
         <div className="empty-panel">

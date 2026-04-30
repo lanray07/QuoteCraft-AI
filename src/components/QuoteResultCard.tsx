@@ -118,6 +118,28 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
           </ul>
         </div>
       ) : null}
+
+      <div className="panel">
+        <div className="panel-header">
+          <h3>Assumptions used</h3>
+        </div>
+        <ul className="bullet-list">
+          {quote.assumptions.map((assumption) => (
+            <li key={assumption}>{assumption}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="panel">
+        <div className="panel-header">
+          <h3>Suggested upsells</h3>
+        </div>
+        <ul className="bullet-list">
+          {quote.suggestedUpsells.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
