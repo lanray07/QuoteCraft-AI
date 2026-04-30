@@ -67,6 +67,7 @@ select {
 .form-card h1,
 .result-card h2,
 .panel h3,
+.result-section h3,
 .empty-panel h2 {
   margin: 0;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
@@ -249,7 +250,7 @@ select {
 
 .result-card {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .estimate-grid {
@@ -272,6 +273,15 @@ select {
 
 .estimate-grid strong {
   font-size: 20px;
+}
+
+.result-section {
+  border-top: 1px solid var(--qc-line);
+  padding-top: 12px;
+}
+
+.result-section .panel-header {
+  margin-bottom: 8px;
 }
 
 .line-items {
@@ -338,5 +348,34 @@ select {
   .primary-button {
     width: 100%;
     min-height: 52px;
+  }
+
+  .app-shell {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .hero-card,
+  .form-card,
+  .result-card,
+  .empty-panel {
+    border-radius: 20px;
+    padding: 16px;
+  }
+
+  .result-card {
+    gap: 10px;
+  }
+
+  .result-section {
+    padding-top: 10px;
+  }
+
+  .estimate-grid {
+    gap: 8px;
+  }
+
+  .estimate-grid div {
+    padding: 12px;
   }
 }

@@ -14,8 +14,8 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
           <p className="eyebrow">Client-ready estimate</p>
           <h2>{quote.serviceName}</h2>
           <p className="muted">
-            {quote.input.projectSize} {quote.unitLabel.toLowerCase()} in {quote.input.location} ·{" "}
-            {formatRegionLabel(quote.input.region)} · {quote.input.qualityTier}
+            {quote.input.projectSize} {quote.unitLabel.toLowerCase()} in {quote.input.location} /{" "}
+            {formatRegionLabel(quote.input.region)} / {quote.input.qualityTier}
           </p>
         </div>
         <div className="estimate-pill">{formatCurrency(quote.midEstimate)}</div>
@@ -60,7 +60,18 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
         </div>
       </div>
 
-      <div className="panel">
+      <div className="result-section">
+        <div className="panel-header">
+          <h3>Assumptions used</h3>
+        </div>
+        <ul className="bullet-list">
+          {quote.assumptions.map((assumption) => (
+            <li key={assumption}>{assumption}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="result-section">
         <div className="panel-header">
           <h3>Breakdown</h3>
         </div>
@@ -77,7 +88,7 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
         </div>
       </div>
 
-      <div className="panel">
+      <div className="result-section">
         <div className="panel-header">
           <h3>Selected extras</h3>
         </div>
@@ -98,7 +109,7 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
         )}
       </div>
 
-      <div className="panel">
+      <div className="result-section">
         <div className="panel-header">
           <h3>Client-facing quote text</h3>
         </div>
@@ -106,7 +117,7 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
       </div>
 
       {explanation ? (
-        <div className="panel">
+        <div className="result-section">
           <div className="panel-header">
             <h3>How it was calculated</h3>
           </div>
@@ -119,18 +130,7 @@ export function QuoteResultCard({ quote, explanation }: QuoteResultCardProps) {
         </div>
       ) : null}
 
-      <div className="panel">
-        <div className="panel-header">
-          <h3>Assumptions used</h3>
-        </div>
-        <ul className="bullet-list">
-          {quote.assumptions.map((assumption) => (
-            <li key={assumption}>{assumption}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="panel">
+      <div className="result-section">
         <div className="panel-header">
           <h3>Suggested upsells</h3>
         </div>
