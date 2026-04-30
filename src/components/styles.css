@@ -372,10 +372,23 @@ select {
   }
 
   .estimate-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
+  }
+
+  .detail-metric {
+    display: none;
   }
 
   .estimate-grid div {
     padding: 12px;
+  }
+
+  .estimate-grid span {
+    font-size: 0.78rem;
+  }
+
+  .estimate-grid strong {
+    font-size: 1.05rem;
   }
 }
