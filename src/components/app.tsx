@@ -32,6 +32,11 @@ function AppShell() {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const formRef = useRef(form);
 
+  function syncForm(nextForm: QuoteInput) {
+    formRef.current = nextForm;
+    setForm(nextForm);
+  }
+
   useEffect(() => {
     formRef.current = form;
   }, [form]);
@@ -44,9 +49,10 @@ function AppShell() {
 
     const applyToolResult = (result: CallToolResult) => {
       const normalized = normalizeToolResult(result as CallToolResult & Record<string, unknown>);
+      const resultForm = normalized.quote?.input ?? normalized.formDefaults;
 
-      if (normalized.formDefaults) {
-        setForm(normalized.formDefaults);
+      if (resultForm) {
+        syncForm(resultForm);
       }
 
       if (normalized.quote) {
@@ -68,7 +74,7 @@ function AppShell() {
         return;
       }
 
-      setForm(nextForm);
+      syncForm(nextForm);
       setError(null);
 
       if (!shouldGenerateQuote) {
@@ -146,8 +152,8 @@ function AppShell() {
       try {
         setBusy(true);
         setError(null);
-        const nextQuote = generateLocalQuote(form);
-        setForm(nextQuote.input);
+        const nextQuote = generateLocalQuote(formRef.current);
+        syncForm(nextQuote.input);
         setQuote(nextQuote);
         setExplanation(explainLocalQuote(nextQuote));
       } catch (nextError) {
@@ -167,9 +173,10 @@ function AppShell() {
       setError(null);
       const result = await app.callServerTool({
         name: toolName,
-        arguments: form as unknown as Record<string, unknown>
+        arguments: formRef.current as unknown as Record<string, unknown>
       });
       const normalized = normalizeToolResult(result as CallToolResult & Record<string, unknown>);
+      const resultForm = normalized.quote?.input ?? normalized.formDefaults;
 
       if (normalized.quote) {
         setQuote(normalized.quote);
@@ -181,8 +188,8 @@ function AppShell() {
         setExplanation(null);
       }
 
-      if (normalized.formDefaults) {
-        setForm(normalized.formDefaults);
+      if (resultForm) {
+        syncForm(resultForm);
       }
 
       if (!normalized.quote && toolName !== appConfig.tools.explainQuote) {
@@ -212,14 +219,14 @@ function AppShell() {
       </div>
 
       <div className="preset-strip">
-        <PatioPreset onSelect={setForm} />
-        <LawnPreset onSelect={setForm} />
-        <PressureWashingPreset onSelect={setForm} />
+        <PatioPreset onSelect={syncForm} />
+        <LawnPreset onSelect={syncForm} />
+        <PressureWashingPreset onSelect={syncForm} />
       </div>
 
       <QuoteForm
         value={form}
-        onChange={setForm}
+        onChange={syncForm}
         onSubmit={() =>
           runTool(
             quote ? appConfig.widgetTools.regenerateQuote : appConfig.widgetTools.generateQuote

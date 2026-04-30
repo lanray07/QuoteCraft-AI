@@ -22,6 +22,62 @@ describe("incoming tool input coercion", () => {
     expect(nextInput?.location).toBe("London");
   });
 
+  test("hydrates nested ChatGPT tool input instead of keeping preset defaults", () => {
+    const fallback = getDefaultQuoteInput("paver_patio");
+
+    const nextInput = coerceIncomingQuoteInput(
+      {
+        params: {
+          arguments: {
+            service: "paver patio",
+            size: "1000 sq ft",
+            location: "London",
+            region: "london"
+          }
+        }
+      },
+      fallback
+    );
+
+    expect(nextInput).not.toBeNull();
+    expect(nextInput?.serviceType).toBe("paver_patio");
+    expect(nextInput?.projectSize).toBe(1000);
+    expect(nextInput?.location).toBe("London");
+    expect(nextInput?.region).toBe("london");
+  });
+
+  test("hydrates JSON-string tool arguments", () => {
+    const fallback = getDefaultQuoteInput("paver_patio");
+
+    const nextInput = coerceIncomingQuoteInput(
+      {
+        arguments: JSON.stringify({
+          serviceType: "paver_patio",
+          squareFeet: "1,000"
+        })
+      },
+      fallback
+    );
+
+    expect(nextInput).not.toBeNull();
+    expect(nextInput?.projectSize).toBe(1000);
+  });
+
+  test("ignores empty wrapper payloads without applying the preset size", () => {
+    const fallback = getDefaultQuoteInput("paver_patio");
+
+    const nextInput = coerceIncomingQuoteInput(
+      {
+        params: {
+          id: "not-quote-input"
+        }
+      },
+      fallback
+    );
+
+    expect(nextInput).toBeNull();
+  });
+
   test("switching service types falls back to that service defaults", () => {
     const fallback = getDefaultQuoteInput("paver_patio");
 
