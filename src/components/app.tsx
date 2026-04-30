@@ -1,9 +1,10 @@
 import { App, PostMessageTransport, applyHostFonts, applyHostStyleVariables } from "@modelcontextprotocol/ext-apps";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
-import { StrictMode, useEffect, useMemo, useState } from "react";
+import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { appConfig } from "../lib/app-config.js";
 import type { QuoteEstimate, QuoteExplanation, QuoteInput } from "../lib/types.js";
+import { coerceIncomingQuoteInput } from "./incoming-tool-input.js";
 import { normalizeToolResult } from "./result-normalizer.js";
 import { QuoteForm } from "./QuoteForm.js";
 import { QuoteResultCard } from "./QuoteResultCard.js";
@@ -29,6 +30,11 @@ function AppShell() {
   const [app, setApp] = useState<App | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const formRef = useRef(form);
+
+  useEffect(() => {
+    formRef.current = form;
+  }, [form]);
 
   useEffect(() => {
     const createdApp = new App(
@@ -56,6 +62,36 @@ function AppShell() {
       setBusy(false);
     };
 
+    const applyToolInput = (payload: unknown, shouldGenerateQuote: boolean) => {
+      const nextForm = coerceIncomingQuoteInput(payload, formRef.current);
+      if (!nextForm) {
+        return;
+      }
+
+      setForm(nextForm);
+      setError(null);
+
+      if (!shouldGenerateQuote) {
+        return;
+      }
+
+      try {
+        const nextQuote = generateLocalQuote(nextForm);
+        setQuote(nextQuote);
+        setExplanation(explainLocalQuote(nextQuote));
+      } catch (nextError) {
+        setError(nextError instanceof Error ? nextError.message : "Unable to complete the request.");
+      } finally {
+        setBusy(false);
+      }
+    };
+
+    createdApp.ontoolinputpartial = (payload) => {
+      applyToolInput(payload, false);
+    };
+    createdApp.ontoolinput = (payload) => {
+      applyToolInput(payload, true);
+    };
     createdApp.ontoolresult = applyToolResult;
     createdApp.onhostcontextchanged = (context) => {
       if (context.styles?.variables) {
