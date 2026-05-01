@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { widgetPricingRules, widgetRegions } from "./widget-config.js";
 import type { QuoteInput, QuoteEstimate } from "../lib/types.js";
 
@@ -10,6 +11,29 @@ interface QuoteFormProps {
   result: QuoteEstimate | null;
 }
 
+function formatProjectSizeInput(value: number): string {
+  return Number.isFinite(value) && value > 0 ? String(value) : "";
+}
+
+function parseProjectSizeInput(value: string): number | null {
+  const normalized = value.replaceAll(",", "").trim();
+  if (!normalized) {
+    return 0;
+  }
+
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function normalizeProjectSizeDraft(value: string): string {
+  const normalized = value.replaceAll(",", "").trim();
+  if (!normalized || normalized === "0" || normalized.startsWith("0.")) {
+    return normalized;
+  }
+
+  return normalized.replace(/^0+(?=\d)/, "");
+}
+
 export function QuoteForm({
   value,
   onChange,
@@ -20,6 +44,14 @@ export function QuoteForm({
 }: QuoteFormProps) {
   const service = widgetPricingRules.services[value.serviceType];
   const availableExtras = Object.entries(service.optionalExtras);
+  const [projectSizeDraft, setProjectSizeDraft] = useState(
+    formatProjectSizeInput(value.projectSize)
+  );
+  const hasValidProjectSize = Number.isFinite(value.projectSize) && value.projectSize > 0;
+
+  useEffect(() => {
+    setProjectSizeDraft(formatProjectSizeInput(value.projectSize));
+  }, [value.projectSize]);
 
   const update = <K extends keyof QuoteInput>(key: K, nextValue: QuoteInput[K]) => {
     if (key === "serviceType") {
@@ -28,7 +60,7 @@ export function QuoteForm({
         ...value,
         [key]: nextValue,
         extras: [],
-        projectSize: nextValue === "lawn_makeover" ? 0.25 : 500,
+        projectSize: 0,
         region: value.region,
         location: value.location || "London"
       });
@@ -42,6 +74,17 @@ export function QuoteForm({
       ...value,
       [key]: nextValue
     });
+  };
+
+  const updateProjectSize = (rawValue: string) => {
+    const nextDraft = normalizeProjectSizeDraft(rawValue);
+    setProjectSizeDraft(nextDraft);
+    const parsed = parseProjectSizeInput(nextDraft);
+    if (parsed === null) {
+      return;
+    }
+
+    update("projectSize", parsed);
   };
 
   const toggleExtra = (extraKey: string) => {
@@ -84,11 +127,15 @@ export function QuoteForm({
         <label>
           <span>{service.sizeLabel}</span>
           <input
-            type="number"
-            min="0.01"
-            step={value.serviceType === "lawn_makeover" ? "0.01" : "1"}
-            value={value.projectSize}
-            onChange={(event) => update("projectSize", Number(event.target.value))}
+            type="text"
+            inputMode="decimal"
+            pattern="[0-9]*[.]?[0-9]*"
+            value={projectSizeDraft}
+            placeholder={value.serviceType === "lawn_makeover" ? "0.25" : "1000"}
+            aria-invalid={!hasValidProjectSize}
+            onFocus={(event) => event.currentTarget.select()}
+            onBlur={() => setProjectSizeDraft(formatProjectSizeInput(value.projectSize))}
+            onChange={(event) => updateProjectSize(event.target.value)}
           />
         </label>
 
@@ -162,7 +209,12 @@ export function QuoteForm({
       </div>
 
       <div className="action-row">
-        <button type="button" className="primary-button" onClick={onSubmit} disabled={isBusy}>
+        <button
+          type="button"
+          className="primary-button"
+          onClick={onSubmit}
+          disabled={isBusy || !hasValidProjectSize}
+        >
           {result ? "Recalculate quote" : "Generate quote"}
         </button>
         <span className="inline-note">Transparent assumptions and pricing logic are shown below the estimate.</span>

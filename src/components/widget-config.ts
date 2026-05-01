@@ -62,5 +62,9 @@ export const presets: PresetDefinition[] = [
 ];
 
 export function getDefaultInput(): QuoteInput {
-  return defaultQuoteInputsByService.paver_patio;
+  return {
+    ...defaultQuoteInputsByService.paver_patio,
+    projectSize: 0,
+    extras: []
+  };
 }

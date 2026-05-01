@@ -110,6 +110,14 @@ function parseProjectSize(value: unknown, fallback: number): number {
   return numberMatch ? Number(numberMatch[0].replaceAll(",", "")) : Number.NaN;
 }
 
+function hasMeaningfulProjectSize(value: unknown): boolean {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value > 0;
+  }
+
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 function readFirstValue(
   source: Record<string, unknown>,
   keys: readonly string[]
@@ -254,6 +262,10 @@ export function coerceIncomingQuoteInput(
       : defaultQuoteInputsByService[nextServiceType];
 
   const projectSizeValue = readFirstValue(args, projectSizeKeys);
+  if (!hasMeaningfulProjectSize(projectSizeValue)) {
+    return null;
+  }
+
   const projectSize = parseProjectSize(projectSizeValue, base.projectSize);
 
   if (!Number.isFinite(projectSize) || projectSize <= 0) {

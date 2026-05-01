@@ -27,6 +27,36 @@ describe("validators", () => {
     expect(parsed.extras).toEqual(["demolition_prep"]);
   });
 
+  test("normalizes model-friendly service and size aliases", () => {
+    const parsed = parseQuoteInput({
+      service: "paver patio",
+      size: "1,000 sq ft",
+      city: "London",
+      market: "London",
+      tier: "standard",
+      schedule: "normal",
+      selectedExtras: []
+    });
+
+    expect(parsed.serviceType).toBe("paver_patio");
+    expect(parsed.projectSize).toBe(1000);
+    expect(parsed.location).toBe("London");
+    expect(parsed.region).toBe("london");
+  });
+
+  test("uses deterministic defaults for omitted location details", () => {
+    const parsed = parseQuoteInput({
+      serviceType: "paver_patio",
+      squareFeet: "1000",
+      qualityTier: "standard",
+      urgency: "standard"
+    });
+
+    expect(parsed.projectSize).toBe(1000);
+    expect(parsed.location).toBe("London");
+    expect(parsed.region).toBe("london");
+  });
+
   test("replaces placeholder location and region values with service defaults", () => {
     const parsed = parseQuoteInput({
       serviceType: "paver_patio",

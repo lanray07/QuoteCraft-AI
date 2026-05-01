@@ -78,6 +78,21 @@ describe("incoming tool input coercion", () => {
     expect(nextInput).toBeNull();
   });
 
+  test("ignores service-only payloads without applying the preset size", () => {
+    const fallback = getDefaultQuoteInput("paver_patio");
+
+    const nextInput = coerceIncomingQuoteInput(
+      {
+        arguments: {
+          service: "paver patio"
+        }
+      },
+      fallback
+    );
+
+    expect(nextInput).toBeNull();
+  });
+
   test("switching service types falls back to that service defaults", () => {
     const fallback = getDefaultQuoteInput("paver_patio");
 
