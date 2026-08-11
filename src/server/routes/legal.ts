@@ -142,4 +142,31 @@ export function registerLegalRoutes(app: Express): void {
         )
       );
   });
+
+  app.get("/support", (_req: Request, res: Response) => {
+    res
+      .type("html")
+      .send(
+        pageShell(
+          "Customer Support",
+          `
+          <p class="eyebrow">QuoteCraft AI</p>
+          <h1>Customer Support</h1>
+          <p>For help with QuoteCraft AI, app review questions, account access, or issues with generated estimates, contact the app operator by email.</p>
+
+          <h2>Support email</h2>
+          <p><a href="mailto:banksmi@mail.com">banksmi@mail.com</a></p>
+
+          <h2>What to include</h2>
+          <ul>
+            <li>A short description of the issue or question.</li>
+            <li>The type of quote you were trying to create, such as paver patio, lawn makeover, or pressure washing.</li>
+            <li>Any error message shown by ChatGPT or the OpenAI Platform submission form.</li>
+          </ul>
+
+          <p>Do not include payment card data, passwords, medical information, or other highly sensitive information in support requests.</p>
+          `
+        )
+      );
+  });
 }
