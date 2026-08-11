@@ -1,8 +1,9 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import { appConfig } from "../lib/app-config.js";
+import { warmPricingData } from "../lib/calculator.js";
 import { deterministicQuoteToolAnnotations, registerTools } from "../server/register-tools.js";
 
 const expectedToolNames = [
@@ -17,8 +18,17 @@ const booleanAnnotationKeys = [
   "idempotentHint"
 ] as const;
 
-describe("tool annotations", () => {
-  test("all advertised tools expose explicit boolean safety annotations", async () => {
+const baseInput = {
+  serviceType: "paver_patio",
+  projectSize: 500,
+  location: "London",
+  region: "london",
+  qualityTier: "standard",
+  urgency: "standard",
+  extras: ["border_accent"]
+};
+
+async function connectRegisteredToolClient() {
     const server = new McpServer({
       name: appConfig.slug,
       version: appConfig.version
@@ -31,6 +41,17 @@ describe("tool annotations", () => {
 
     registerTools(server);
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+
+  return { client, server };
+}
+
+beforeAll(async () => {
+  await warmPricingData();
+});
+
+describe("tool descriptors", () => {
+  test("all advertised tools expose explicit boolean safety annotations and output schemas", async () => {
+    const { client, server } = await connectRegisteredToolClient();
 
     try {
       const { tools } = await client.listTools();
@@ -50,6 +71,28 @@ describe("tool annotations", () => {
         }
 
         expect(annotations).toMatchObject(deterministicQuoteToolAnnotations);
+        expect(tool.outputSchema).toBeDefined();
+      }
+    } finally {
+      await client.close();
+      await server.close();
+    }
+  });
+
+  test("tool outputs validate against their advertised output schemas", async () => {
+    const { client, server } = await connectRegisteredToolClient();
+
+    try {
+      await client.listTools();
+
+      for (const toolName of Object.values(appConfig.tools)) {
+        const result = await client.callTool({
+          name: toolName,
+          arguments: baseInput
+        });
+
+        expect(result.isError).not.toBe(true);
+        expect(result.structuredContent).toBeDefined();
       }
     } finally {
       await client.close();

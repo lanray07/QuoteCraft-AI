@@ -1,7 +1,11 @@
 import { registerAppTool } from "@modelcontextprotocol/ext-apps/server";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { appConfig } from "../lib/app-config.js";
-import { quoteToolInputShape } from "../lib/validators.js";
+import {
+  explanationReadyOutputSchema,
+  quoteReadyOutputSchema,
+  quoteToolInputShape
+} from "../lib/validators.js";
 import { explainQuoteTool } from "../tools/explainQuote.js";
 import { generateQuoteTool } from "../tools/generateQuote.js";
 import { regenerateQuoteTool } from "../tools/regenerateQuote.js";
@@ -36,6 +40,7 @@ export function registerTools(server: McpServer): void {
       description:
         "Create a transparent, deterministic service-business estimate using configured pricing rules.",
       inputSchema: quoteToolInputShape,
+      outputSchema: quoteReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
@@ -53,6 +58,7 @@ export function registerTools(server: McpServer): void {
       title: "Generate Quote Widget",
       description: "App-only quote generation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
+      outputSchema: quoteReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,
@@ -70,6 +76,7 @@ export function registerTools(server: McpServer): void {
       title: "Explain Quote",
       description: "Explain exactly how a quote was calculated and which assumptions were used.",
       inputSchema: quoteToolInputShape,
+      outputSchema: explanationReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
@@ -87,6 +94,7 @@ export function registerTools(server: McpServer): void {
       title: "Explain Quote Widget",
       description: "App-only quote explanation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
+      outputSchema: explanationReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,
@@ -105,6 +113,7 @@ export function registerTools(server: McpServer): void {
       description:
         "Recalculate a quote after changing tier, region, urgency, size, or selected extras.",
       inputSchema: quoteToolInputShape,
+      outputSchema: quoteReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
@@ -122,6 +131,7 @@ export function registerTools(server: McpServer): void {
       title: "Regenerate Quote Widget",
       description: "App-only quote recalculation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
+      outputSchema: quoteReadyOutputSchema,
       annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,

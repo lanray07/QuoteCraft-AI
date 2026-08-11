@@ -69,6 +69,70 @@ export const quoteInputSchema = z.object({
   extras: z.array(z.string()).default([])
 });
 
+const quoteInputOutputSchema = z.object({
+  serviceType: serviceTypeSchema,
+  projectSize: z.number(),
+  location: z.string(),
+  region: z.enum(REGION_KEYS),
+  qualityTier: qualityTierSchema,
+  urgency: urgencySchema,
+  extras: z.array(z.string())
+});
+
+const quoteLineItemOutputSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  value: z.number(),
+  detail: z.string()
+});
+
+const selectedExtraOutputSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  amount: z.number()
+});
+
+export const quoteEstimateOutputSchema = z.object({
+  input: quoteInputOutputSchema,
+  serviceName: z.string(),
+  unitLabel: z.string(),
+  lowEstimate: z.number(),
+  midEstimate: z.number(),
+  workingEstimate: z.number(),
+  highEstimate: z.number(),
+  materialEstimate: z.number(),
+  laborEstimate: z.number(),
+  markupAmount: z.number(),
+  regionalAdjustment: z.number(),
+  urgencyAdjustment: z.number(),
+  extrasTotal: z.number(),
+  minimumApplied: z.boolean(),
+  selectedExtras: z.array(selectedExtraOutputSchema),
+  assumptions: z.array(z.string()),
+  suggestedUpsells: z.array(z.string()),
+  formulaBreakdown: z.array(quoteLineItemOutputSchema),
+  clientFacingQuoteText: z.string(),
+  authoritativeSummaryText: z.string()
+});
+
+export const quoteExplanationOutputSchema = z.object({
+  summary: z.string(),
+  steps: z.array(z.string()),
+  formulaBreakdown: z.array(quoteLineItemOutputSchema),
+  assumptions: z.array(z.string())
+});
+
+export const quoteReadyOutputSchema = z.object({
+  status: z.literal("quote_ready"),
+  quote: quoteEstimateOutputSchema
+});
+
+export const explanationReadyOutputSchema = z.object({
+  status: z.literal("explanation_ready"),
+  quote: quoteEstimateOutputSchema,
+  explanation: quoteExplanationOutputSchema
+});
+
 export type RawQuoteInput = z.input<typeof quoteInputSchema> | Record<string, unknown>;
 
 const projectSizeKeys = [
