@@ -20,6 +20,13 @@ const widgetSharedMeta = {
   }
 };
 
+export const deterministicQuoteToolAnnotations = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  openWorldHint: false,
+  idempotentHint: true
+} as const;
+
 export function registerTools(server: McpServer): void {
   registerAppTool(
     server,
@@ -29,12 +36,7 @@ export function registerTools(server: McpServer): void {
       description:
         "Create a transparent, deterministic service-business estimate using configured pricing rules.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
         "openai/toolInvocation/invoking": "Building quote",
@@ -51,12 +53,7 @@ export function registerTools(server: McpServer): void {
       title: "Generate Quote Widget",
       description: "App-only quote generation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,
         "openai/toolInvocation/invoking": "Building quote",
@@ -73,12 +70,7 @@ export function registerTools(server: McpServer): void {
       title: "Explain Quote",
       description: "Explain exactly how a quote was calculated and which assumptions were used.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
         "openai/toolInvocation/invoking": "Explaining quote",
@@ -95,12 +87,7 @@ export function registerTools(server: McpServer): void {
       title: "Explain Quote Widget",
       description: "App-only quote explanation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,
         "openai/toolInvocation/invoking": "Explaining quote",
@@ -118,12 +105,7 @@ export function registerTools(server: McpServer): void {
       description:
         "Recalculate a quote after changing tier, region, urgency, size, or selected extras.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...sharedMeta,
         "openai/toolInvocation/invoking": "Refreshing quote",
@@ -140,12 +122,7 @@ export function registerTools(server: McpServer): void {
       title: "Regenerate Quote Widget",
       description: "App-only quote recalculation used by the QuoteCraft AI widget.",
       inputSchema: quoteToolInputShape,
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false,
-        idempotentHint: true
-      },
+      annotations: deterministicQuoteToolAnnotations,
       _meta: {
         ...widgetSharedMeta,
         "openai/toolInvocation/invoking": "Refreshing quote",
